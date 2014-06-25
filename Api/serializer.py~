@@ -1,0 +1,17 @@
+from rest_framework import serializers
+from Api.models import UserTemp,Status
+
+class UserTempSerializer(serializers.ModelSerializer):
+    class Meta :
+       	model = UserTemp
+        fields = ('Email','Password','DateTimeCreated')
+
+    def restore_object(self,attrs,instance=None):
+
+ 	if instance :
+           instance.Email     = attrs.get('Email',instance.Email)
+           instance.Password  = attrs.get('Password',instance.Password)
+           instance.DateTime  = attrs.get('DateTimeCreated',instance.DateTimeCreated)
+           return instance
+        return UserTemp(**attrs)
+  
