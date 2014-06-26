@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
-from Api.models import tempUser,Profile,User,PredictionDetail,Team,LeagueType,Prediction,CompletedText,League,PurchasedPrediction
-from Api.serializer import tempUserSerializer,UserSerializer,PredictionSerializer,PredictionDSerializer
+from Api.models import tempUser,Profile,PredictionDetail,Team,LeagueType,Prediction,CompletedText,League,PurchasedPrediction
+from Api.serializer import tempUserSerializer,ProfileSerializer,PredictionSerializer,PredictionDSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view,permission_classes	
 from rest_framework import status
@@ -12,101 +12,116 @@ from django.conf import settings
 from django.http import HttpResponse
 from django.contrib.auth.hashers import make_password,check_password
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.authtoken.models import Token
+import base64 
 
 @api_view(['POST'])
+@permission_classes((IsAuthenticated ,))
 def registration(request):
     if request.method=='POST':
        content = ("Hello Welcome to your new LiveBetTips account.\nYou can log in right away and start using your new account.\n"
                   "Please take a moment to confirm your email address with us by clicking in link below.")
+       encode = base64.b64encode(request.DATA["email"]+":"+request.DATA["password"])
     try:
-        user = User.objects.get(Email = request.DATA["Email"])
+        user = User.objects.get(email = request.DATA["email"])
     except:
-        request.DATA["Password"]=make_password(request.DATA["Password"])
+        request.DATA["password"]=make_password(request.DATA["password"])
         serializer =  tempUserSerializer(data=request.DATA)
         if serializer.is_valid():
            serializer.save()
         
-           temp_user=tempUser.objects.get(Email = request.DATA["Email"])
-           confirmation_code = ''.join(random.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for x in range(33))
-           profile = Profile(user = temp_user , ConfirmationCode = confirmation_code)
+           confirmation_code = ''.join(random.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for x in range(33)) 
+           profile = Profile(username = request.DATA["email"] , confirmationCode = confirmation_code,authToken = encode)
            profile.save()
            
-           send_mail("LiveBetTips Account Confirmation",content+"\n127.0.0.1:8000/confirmation/"+str(profile.ConfirmationCode) 
-                     + "/"+profile.user.Email,'no-reply@LiveBetTips.com',[profile.user.Email],fail_silently=False)
+           send_mail("LiveBetTips Account Confirmation",content+"\n127.0.0.1:8000/confirmation/"+str(profile.confirmationCode) 
+                     + "/"+profile.username,'no-reply@LiveBetTips.com',[profile.username],fail_silently=False)
            return Response(serializer.data,status=status.HTTP_201_CREATED)
         return Response(serializer.errors,status = status.HTTP_409_CONFLICT)
     return Response(status = status.HTTP_409_CONFLICT)
 
-def confirmation(request,confirmation_code,email):
+def confirmation(request,confirmation_code,emailID):
      
    try:
-      temp_user = tempUser.objects.get(Email=email)
+      temp_user = tempUser.objects.get(email=emailID)
    except:
       return HttpResponse("Sorry your doesnt exist.Please register again")
    
-   pro = Profile.objects.get(user_id=temp_user.id)
-   if pro.ConfirmationCode == confirmation_code:
-      user = User(Email = temp_user.Email ,Password = temp_user.Password)                 
+   profile = Profile.objects.get(username =temp_user.email)
+   if profile.confirmationCode == confirmation_code:
+      user = User(username=temp_user.email, email = temp_user.email ,password = temp_user.password)                 
       user.save()
+      
       temp_user.delete()
       return HttpResponse("Thankyou! Your account has been activated .Now you can login")
    return HttpResponse("Sorry your account couldn't be activated this time. Please try again later")
 
 @api_view(['POST'])
+@permission_classes((IsAuthenticated ,))
 def resetPassword(request):
     if request.method=='POST':
     
      try:
-        user = User.objects.get(Email = request.DATA['Email'])      
+        user = User.objects.get(email = request.DATA['email'])      
      except : 
         return Response(status = status.HTTP_404_NOT_FOUND)
-     send_mail("LiveBetTips Password Reset","Click on the link below to reset your password.\n127.0.0.1:8000/reset-Password/"
-               ,'no-reply@LiveBetTips.com',[user.Email],fail_silently=False)
+     send_mail("LiveBetTips Password Reset","Click on the link below to reset your password.\n127.0.0.1:8000/reset-password/"
+               ,'no-reply@LiveBetTips.com',[user.email],fail_silently=False)
      return Response(status = status.HTTP_200_OK) 
 
 def setNewPassword(request):
     if request.method == 'POST':
        
       try:
-        user = User.objects.get(Email = request.POST['Email'])  
+        user = User.objects.get(email = request.POST['email'])  
       except:
         return HttpResponse("Sorry EmailID doesn't exist.Please go back and re-enter your email id")
-      password = make_password(request.POST['Password'])
-      user.Password = password 
+      
+      encode = base64.b64encode(user.email + ":" + request.POST['password'])
+      pro= Profile.objects.get(username = user.email)
+      pro.authToken = encode
+      pro.save()
+      password = make_password(request.POST['password'])
+      user.password = password 
       user.save()
       return HttpResponse("Your Password has been reset.")  
     return render(request , 'Api/resetForm.html',{ })     
 
 @api_view(['POST'])
+@permission_classes((IsAuthenticated ,))
 def login(request):
    if request.method=='POST':
    
      try:
-         user = User.objects.get(Email = request.DATA["Email"])
+         user = User.objects.get(email = request.DATA["email"])
      except: 
          try:
-            temp_user = tempUser.objects.get(Email = request.DATA["Email"])
+            temp_user = tempUser.objects.get(email = request.DATA["email"])
          except : 
             return Response(status=status.HTTP_404_NOT_FOUND)
          return Response(status=status.HTTP_409_CONFLICT)
- 
-     user_serializer = UserSerializer(user)  
-     if check_password(request.DATA["Password"],user.Password) :
-        return Response(user_serializer.data,status = status.HTTP_200_OK)
-     return Response(user_serializer.errors,status = status.HTTP_401_UNAUTHORIZED) 
+     
+     profile = Profile.objects.get(username = user.email) 
+     profileSerializer = ProfileSerializer(profile)  
+     if check_password(request.DATA["password"],user.password) :
+        
+        return Response(profileSerializer.data,status = status.HTTP_200_OK)
+     return Response(profileSerializer.errors,status = status.HTTP_401_UNAUTHORIZED) 
     
 @api_view(['POST'])
+@permission_classes((IsAuthenticated ,))
 def contactUs(request) :
    if request.method=='POST':
       adminEmail= 'sarthakmeh03@gmail.com'
-      userEmail = request.DATA["Email"]
-      message   = request.DATA["Content"]
-      subject   = request.DATA["Subject"]
+      userEmail = request.DATA["email"]
+      message   = request.DATA["content"]
+      subject   = request.DATA["subject"]
       send_mail(subject,message,userEmail,[adminEmail],fail_silently=False)
       return Response(status = status.HTTP_200_OK)
    return Response(status = status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
+@permission_classes((IsAuthenticated ,))
 def showPredictions(request):
      
     if request.method=='GET':
@@ -120,6 +135,7 @@ def showPredictions(request):
     return Response(status =status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
+@permission_classes((IsAuthenticated ,))
 def predictionDetail(request,userID,tipID):
     if request.method=='GET':
        
@@ -129,20 +145,20 @@ def predictionDetail(request,userID,tipID):
         return Response(status = status.HTTP_400_BAD_REQUEST)
 
       try:   
-       tipDetail = PredictionDetail.objects.get(Prediction_id = tipID)
+       tipDetail = PredictionDetail.objects.get(prediction_id = tipID)
       except:
        return Response(status = status.HTTP_400_BAD_REQUEST)
       
       prediction = Prediction.objects.get(id = tipID)      
       if tipDetail.isCompleted == True : 
-         completedText = CompletedText.objects.get(id = tipDetail.CompletedText_id) 
-         prediction.Message = prediction.Message + ". "+completedText.Message   
+         completedText = CompletedText.objects.get(id = tipDetail.completedText_id) 
+         prediction.message = prediction.message + ". "+completedText.message   
                
          predictionSerializer = PredictionSerializer(prediction)
          return Response(predictionSerializer.data,status = status.HTTP_200_OK)
       else : 
          try:
-          purchasePrediction=PurchasedPrediction.objects.get(UserID = userID,PredictionID = tipID)
+          purchasePrediction=PurchasedPrediction.objects.get(userID = userID,predictionID = tipID)
          except: 
            return Response(status = status.HTTP_401_UNAUTHORIZED)
     
@@ -151,6 +167,7 @@ def predictionDetail(request,userID,tipID):
       return Response(status = status.HTTP_404_NOT_FOUND)    
             
 @api_view(['GET'])
+@permission_classes((IsAuthenticated ,))
 def userPredictions(request,userID):
     if request.method == 'GET':
        predictions = [] 
@@ -161,13 +178,13 @@ def userPredictions(request,userID):
          return Response(status = status.HTTP_400_BAD_REQUEST)
        
        try:      
-         userPredicts = PurchasedPrediction.objects.filter(UserID = userID)
+         userPredicts = PurchasedPrediction.objects.filter(userID = userID)
        except : 
          return Response(status = status.HTTP_400_BAD_REQUEST)
         
        for predict in userPredicts :
          try:
-          predicts=PredictionDetail.objects.get(Prediction_id = predict.PredictionID)
+          predicts=PredictionDetail.objects.get(prediction_id = predict.predictionID)
          except :
           return Response(status = status.HTTP_404_NOT_FOUND)
          predictions.append(predicts)

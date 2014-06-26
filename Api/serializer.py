@@ -1,31 +1,31 @@
 from rest_framework import serializers
-from Api.models import tempUser,User,PredictionDetail,Unit,PurchasedPrediction,Prediction
-
+from Api.models import tempUser,PredictionDetail,Unit,PurchasedPrediction,Prediction,Profile
+from django.contrib.auth.models import User 
 class tempUserSerializer(serializers.ModelSerializer):
     class Meta :
        	model = tempUser
-        fields = ('id','Email','Password','DateTimeCreated')
+        fields = ('id','email','password','DateTimeCreated')
 
     def restore_object(self,attrs,instance=None):
 
  	if instance :
-           instance.Email     = attrs.get('Email',instance.Email)
-           instance.Password  = attrs.get('Password',instance.Password)
+           instance.email     = attrs.get('email',instance.email)
+           instance.password  = attrs.get('password',instance.password)
            instance.DateTime  = attrs.get('DateTimeCreated',instance.DateTimeCreated)
            return instance
         return tempUser(**attrs)
 
-class UserSerializer(serializers.ModelSerializer):
+class ProfileSerializer(serializers.ModelSerializer):
     class Meta :
-        model = User 
-        fields = ('id','Email','Password','DateTimeVerified')
+        model = Profile 
+        fields = ('id','username','authToken',)
 
 class PredictionDSerializer(serializers.ModelSerializer): 
      class Meta : 
         model = PredictionDetail
-        fields = ('id','LeagueType','FlagURL','HomeTeam','AwayTeam','isCompleted','Prediction','DateTimeCreated','isTipVerified') 
+        fields = ('id','leagueType','flagURL','homeTeam','awayTeam','isCompleted','prediction','DateTimeCreated','isTipVerified') 
 
 class PredictionSerializer(serializers.ModelSerializer):
      class Meta : 
          model = Prediction 
-         fields = ('id','Name','Message')
+         fields = ('id','name','message')

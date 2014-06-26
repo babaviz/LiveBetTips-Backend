@@ -1,9 +1,9 @@
 <hi> Reset Password </h1>
 
-<form action ="/reset-Password/" method ="post">
+<form action ="/reset-password/" method ="post">
 {% csrf_token %}
-<p>Email ID: <input type="email" name="Email"></p>
-<p>New Password:<input type ="password" name="Password"></p>
+<p>Email ID: <input type="email" name="email"></p>
+<p>New Password:<input type ="password" name="password"></p>
 <p><input type = "submit" value ="Reset Password"></p>
 </form>
 
