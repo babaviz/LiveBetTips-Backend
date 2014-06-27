@@ -15,8 +15,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
 import base64 
 
+URL = "127.0.0.1:8000"
 @api_view(['POST'])
-@permission_classes((IsAuthenticated ,))
 def registration(request):
     if request.method=='POST':
        content = ("Hello Welcome to your new LiveBetTips account.\nYou can log in right away and start using your new account.\n"
@@ -34,7 +34,7 @@ def registration(request):
            profile = Profile(username = request.DATA["email"] , confirmationCode = confirmation_code,authToken = encode)
            profile.save()
            
-           send_mail("LiveBetTips Account Confirmation",content+"\n127.0.0.1:8000/confirmation/"+str(profile.confirmationCode) 
+           send_mail("LiveBetTips Account Confirmation",content+"\n"+URL+"/confirmation/"+str(profile.confirmationCode) 
                      + "/"+profile.username,'no-reply@LiveBetTips.com',[profile.username],fail_silently=False)
            return Response(serializer.data,status=status.HTTP_201_CREATED)
         return Response(serializer.errors,status = status.HTTP_409_CONFLICT)
@@ -57,7 +57,6 @@ def confirmation(request,confirmation_code,emailID):
    return HttpResponse("Sorry your account couldn't be activated this time. Please try again later")
 
 @api_view(['POST'])
-@permission_classes((IsAuthenticated ,))
 def resetPassword(request):
     if request.method=='POST':
     
@@ -65,7 +64,7 @@ def resetPassword(request):
         user = User.objects.get(email = request.DATA['email'])      
      except : 
         return Response(status = status.HTTP_404_NOT_FOUND)
-     send_mail("LiveBetTips Password Reset","Click on the link below to reset your password.\n127.0.0.1:8000/reset-password/"
+     send_mail("LiveBetTips Password Reset","Click on the link below to reset your password.\n"+URL+"/reset-password/"
                ,'no-reply@LiveBetTips.com',[user.email],fail_silently=False)
      return Response(status = status.HTTP_200_OK) 
 
@@ -88,7 +87,6 @@ def setNewPassword(request):
     return render(request , 'Api/resetForm.html',{ })     
 
 @api_view(['POST'])
-@permission_classes((IsAuthenticated ,))
 def login(request):
    if request.method=='POST':
    
@@ -142,7 +140,7 @@ def predictionDetail(request,userID,tipID):
       try:  
         user = User.objects.get(id = userID)
       except:
-        return Response(status = status.HTTP_400_BAD_REQUEST)
+        return Response(status = status.HTTP_404_NOT_FOUND)
 
       try:   
        tipDetail = PredictionDetail.objects.get(prediction_id = tipID)
@@ -175,12 +173,12 @@ def userPredictions(request,userID):
        try: 
          user = User.objects.get(id = userID)
        except: 
-         return Response(status = status.HTTP_400_BAD_REQUEST)
+         return Response(status = status.HTTP_404_NOT_FOUND)
        
        try:      
          userPredicts = PurchasedPrediction.objects.filter(userID = userID)
        except : 
-         return Response(status = status.HTTP_400_BAD_REQUEST)
+         return Response(status = status.HTTP_404_NOT_FOUND)
         
        for predict in userPredicts :
          try:
