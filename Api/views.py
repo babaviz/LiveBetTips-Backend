@@ -15,7 +15,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
 import base64 
 
-
+#check if everything is working fine
 url = "178.21.172.107"
 @api_view(['POST'])
 def registration(request):
