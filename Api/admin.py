@@ -2,7 +2,7 @@ from django.contrib import admin
 from Api.models import User,Team,LeagueType,League,Prediction,Unit,CompletedText,PredictionDetail,PurchasedPrediction,tempUser,Profile	
 
 
-class PredictionDetailAdmin(admin.ModelAdmin):
+class PredictionAdmin(admin.ModelAdmin):
      
      list_display = ('id','leagueType','homeTeam','awayTeam','isPushNotifSend','isCompleted','isTipVerified')
      list_filter =  ['isCompleted']
@@ -13,7 +13,7 @@ class PredictionDetailAdmin(admin.ModelAdmin):
 class LeagueAdmin(admin.ModelAdmin):
      list_display = ('name','countryFlagUrl')
 
-class PredictionAdmin(admin.ModelAdmin):
+class PredictionDetailAdmin(admin.ModelAdmin):
      list_display = ('id','name','message')
 
 class PurchasedPredictionAdmin(admin.ModelAdmin):

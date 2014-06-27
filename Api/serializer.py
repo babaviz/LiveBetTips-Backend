@@ -22,12 +22,12 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Profile 
         fields = ('id','username','authToken',)
 
-class PredictionDSerializer(serializers.ModelSerializer): 
+class PredictionSerializer(serializers.ModelSerializer): 
      class Meta : 
-        model = PredictionDetail
-        fields = ('id','leagueType','flagURL','homeTeam','awayTeam','isCompleted','prediction','DateTimeCreated','isTipVerified') 
+        model = Prediction
+        fields = ('id','leagueType','flagURL','homeTeam','awayTeam','isCompleted','tipDetail','DateTimeCreated','isTipVerified') 
 
-class PredictionSerializer(serializers.ModelSerializer):
+class PredictionDSerializer(serializers.ModelSerializer):
      class Meta : 
-         model = Prediction 
+         model = PredictionDetail
          fields = ('id','name','message')

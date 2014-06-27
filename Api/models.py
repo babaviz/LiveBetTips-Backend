@@ -39,7 +39,7 @@ class League(models.Model):
      def __unicode__(self):
         return self.name
      
-class Prediction(models.Model):
+class PredictionDetail(models.Model):
     name = models.CharField(max_length=200)
     message = models.TextField(max_length=1000)
 
@@ -58,13 +58,13 @@ class CompletedText(models.Model):
      def __unicode__(self):
         return self.message 
 
-class PredictionDetail(models.Model):
+class Prediction(models.Model):
      leagueType = models.ForeignKey(LeagueType)
      league     = models.ForeignKey(League) 
      flagURL    = models.CharField(max_length=200,editable = False)
      homeTeam   = models.ForeignKey(Team,related_name = 'statusPrediction_home_team')
      awayTeam   = models.ForeignKey(Team,related_name = 'statusPrediction_away_team')
-     prediction = models.ForeignKey(Prediction)
+     tipDetail = models.ForeignKey(PredictionDetail)
      isPushNotifSend = models.BooleanField()
      isCompleted = models.BooleanField(default = False) 
      completedText = models.ForeignKey(CompletedText)   
@@ -75,7 +75,7 @@ class PredictionDetail(models.Model):
      def save(self,*args,**kwargs):
           
          self.flagURL = self.league.countryFlagUrl
-         return super(PredictionDetail,self).save(*args,**kwargs)     
+         return super(Prediction,self).save(*args,**kwargs)     
 
 class PurchasedPrediction(models.Model):
       userID = models.IntegerField()

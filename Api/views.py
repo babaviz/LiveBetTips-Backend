@@ -124,11 +124,11 @@ def showPredictions(request):
      
     if request.method=='GET':
       try:
-       predictions = PredictionDetail.objects.filter(isPushNotifSend=request.GET.get('isPushed',''))
+       predictions = Prediction.objects.filter(isPushNotifSend=request.GET.get('isPushed',''))
       except : 
          return Response(status = status.HTTP_404_NOT_FOUND)    
            
-      predictSerializer = PredictionDSerializer(predictions) 
+      predictSerializer = PredictionSerializer(predictions) 
       return Response(predictSerializer.data,status = status.HTTP_200_OK)
     return Response(status =status.HTTP_400_BAD_REQUEST)
 
@@ -143,16 +143,16 @@ def predictionDetail(request,userID,tipID):
         return Response(status = status.HTTP_404_NOT_FOUND)
 
       try:   
-       tipDetail = PredictionDetail.objects.get(prediction_id = tipID)
+       tip = Prediction.objects.get(id = tipID)
       except:
        return Response(status = status.HTTP_400_BAD_REQUEST)
       
-      prediction = Prediction.objects.get(id = tipID)      
-      if tipDetail.isCompleted == True : 
-         completedText = CompletedText.objects.get(id = tipDetail.completedText_id) 
+      prediction = PredictionDetail.objects.get(id = tip.tipDetail_id)      
+      if tip.isCompleted == True : 
+         completedText = CompletedText.objects.get(id = tip.completedText_id) 
          prediction.message = prediction.message + ". "+completedText.message   
                
-         predictionSerializer = PredictionSerializer(prediction)
+         predictionSerializer = PredictionDSerializer(prediction)
          return Response(predictionSerializer.data,status = status.HTTP_200_OK)
       else : 
          try:
@@ -160,7 +160,7 @@ def predictionDetail(request,userID,tipID):
          except: 
            return Response(status = status.HTTP_401_UNAUTHORIZED)
     
-         predictionSerializer = PredictionSerializer(prediction)
+         predictionSerializer = PredictionDSerializer(prediction)
          return Response(predictionSerializer.data , status=status.HTTP_200_OK)
       return Response(status = status.HTTP_404_NOT_FOUND)    
             
@@ -182,17 +182,12 @@ def userPredictions(request,userID):
         
        for predict in userPredicts :
          try:
-          predicts=PredictionDetail.objects.get(prediction_id = predict.predictionID)
+          predicts=Prediction.objects.get(id = predict.predictionID)
          except :
           return Response(status = status.HTTP_404_NOT_FOUND)
          predictions.append(predicts)
             
-       predictSerializer = PredictionDSerializer(predictions)
+       predictSerializer = PredictionSerializer(predictions)
        return Response(predictSerializer.data , status = status.HTTP_200_OK)
 
 
-
-    
- 
-
-     
