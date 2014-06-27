@@ -15,7 +15,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
 import base64 
 
-url = "178.21.172.107"
+URL = "178.21.172.107"
 @api_view(['POST'])
 def registration(request):
     if request.method=='POST':
@@ -34,7 +34,7 @@ def registration(request):
            profile = Profile(username = request.DATA["email"] , confirmationCode = confirmation_code,authToken = encode)
            profile.save()
            
-           send_mail("LiveBetTips Account Confirmation",content+"\n"+url+"/confirmation/"+str(profile.confirmationCode) 
+           send_mail("LiveBetTips Account Confirmation",content+"\n"+URL+"/confirmation/"+str(profile.confirmationCode) 
                      + "/"+profile.username,'no-reply@LiveBetTips.com',[profile.username],fail_silently=False)
            return Response(serializer.data,status=status.HTTP_201_CREATED)
         return Response(serializer.errors,status = status.HTTP_409_CONFLICT)
@@ -64,7 +64,7 @@ def resetPassword(request):
         user = User.objects.get(email = request.DATA['email'])      
      except : 
         return Response(status = status.HTTP_404_NOT_FOUND)
-     send_mail("LiveBetTips Password Reset","Click on the link below to reset your password.\n"+url+"/reset-password/"
+     send_mail("LiveBetTips Password Reset","Click on the link below to reset your password.\n"+URL+"/reset-password/"
                ,'no-reply@LiveBetTips.com',[user.email],fail_silently=False)
      return Response(status = status.HTTP_200_OK) 
 
