@@ -26,14 +26,14 @@ TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['s172107.vps.name-servers.gr']
 
 EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'sarthakmeh03@gmail.com'
-EMAIL_HOST_PASSWORD = 'MehSarthak03'
-DEFAULT_FROM_EMAIL = 'sarthakmeh03@gmail.com'
+EMAIL_HOST = 'localhost.localdomain'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = 'root@s172107.vps.name-servers.gr'
+EMAIL_HOST_PASSWORD = ''
+DEFAULT_FROM_EMAIL = 'root'
 DEFAULT_TO_EMAIL = 'to email'
 # Application definition
 
@@ -90,5 +90,5 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
-
+STATIC_ROOT = '/LiveBetTips/static'
 STATIC_URL = '/static/'

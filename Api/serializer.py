@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from Api.models import tempUser,PredictionDetail,Unit,PurchasedPrediction,Prediction,Profile
 from django.contrib.auth.models import User 
+
+
 class tempUserSerializer(serializers.ModelSerializer):
     class Meta :
        	model = tempUser
