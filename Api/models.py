@@ -70,13 +70,22 @@ class Prediction(models.Model):
      completedText = models.ForeignKey(CompletedText)   
      DateTimeCreated = models.DateTimeField()
      DateTimeCompleted = models.DateTimeField()
-     isTipVerified = models.BooleanField()
+     isPredictionVerified = models.CharField(max_length=50)
+     verified = models.BooleanField()
+     covered = models.BooleanField()
   
      def save(self,*args,**kwargs):
           
          self.flagURL = self.league.countryFlagUrl
+         if self.verified:
+            self.isPredictionVerified = "verified"
+         elif self.covered:
+            self.isPredictionVerified = "covered"
+         else : 
+            self.isPredictionVerified = "not verified"                       
+	 
          return super(Prediction,self).save(*args,**kwargs)     
-
+          
 class PurchasedPrediction(models.Model):
       userID = models.IntegerField()
       predictionID = models.IntegerField()

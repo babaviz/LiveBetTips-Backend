@@ -25,7 +25,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 class PredictionSerializer(serializers.ModelSerializer): 
      class Meta : 
         model = Prediction
-        fields = ('id','leagueType','flagURL','homeTeam','awayTeam','isCompleted','tipDetail','DateTimeCreated','isTipVerified') 
+        fields = ('id','leagueType','flagURL','homeTeam','awayTeam','isCompleted','tipDetail','DateTimeCreated','isPredictionVerified') 
 
 class PredictionDSerializer(serializers.ModelSerializer):
      class Meta : 

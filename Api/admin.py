@@ -4,7 +4,12 @@ from Api.models import User,Team,LeagueType,League,Prediction,Unit,CompletedText
 
 class PredictionAdmin(admin.ModelAdmin):
      
-     list_display = ('id','leagueType','homeTeam','awayTeam','isPushNotifSend','isCompleted','isTipVerified')
+     fieldsets = [
+        (None,               {'fields': ['leagueType','league','homeTeam','awayTeam','tipDetail','isPushNotifSend','isCompleted'
+                              , 'completedText','DateTimeCreated','DateTimeCompleted']}),
+        ('isPredictionVerified', {'fields': ['verified','covered']}),
+    ]
+     list_display = ('id','leagueType','homeTeam','awayTeam','isPushNotifSend','isCompleted','isPredictionVerified')
      list_filter =  ['isCompleted']
 
 #class UserAdmin(admin.ModelAdmin):
