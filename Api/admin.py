@@ -7,7 +7,7 @@ class PredictionAdmin(admin.ModelAdmin):
      fieldsets = [
         (None,               {'fields': ['leagueType','league','homeTeam','awayTeam','tipDetail','isPushNotifSend','isCompleted'
                               , 'completedText','DateTimeCreated','DateTimeCompleted']}),
-        ('isPredictionVerified', {'fields': ['verified','covered']}),
+        ('isPredictionVerified', {'fields': ['verified','covered','pending']}),
     ]
      list_display = ('id','leagueType','homeTeam','awayTeam','isPushNotifSend','isCompleted','isPredictionVerified')
      list_filter =  ['isCompleted']

@@ -73,6 +73,7 @@ class Prediction(models.Model):
      isPredictionVerified = models.CharField(max_length=50)
      verified = models.BooleanField()
      covered = models.BooleanField()
+     pending = models.BooleanField()
   
      def save(self,*args,**kwargs):
           
@@ -81,6 +82,8 @@ class Prediction(models.Model):
             self.isPredictionVerified = "verified"
          elif self.covered:
             self.isPredictionVerified = "covered"
+         elif self.pending : 
+            self.isPredictionVerified = "pending"
          else : 
             self.isPredictionVerified = "not verified"                       
 	 
