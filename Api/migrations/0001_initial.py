@@ -75,13 +75,15 @@ class Migration(SchemaMigration):
             ('flagURL', self.gf('django.db.models.fields.CharField')(max_length=200)),
             ('homeTeam', self.gf('django.db.models.fields.related.ForeignKey')(related_name='statusPrediction_home_team', to=orm['Api.Team'])),
             ('awayTeam', self.gf('django.db.models.fields.related.ForeignKey')(related_name='statusPrediction_away_team', to=orm['Api.Team'])),
-            ('prediction', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['Api.PredictionDetail'])),
+            ('tipDetail', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['Api.PredictionDetail'])),
             ('isPushNotifSend', self.gf('django.db.models.fields.BooleanField')()),
             ('isCompleted', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('completedText', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['Api.CompletedText'])),
             ('DateTimeCreated', self.gf('django.db.models.fields.DateTimeField')()),
             ('DateTimeCompleted', self.gf('django.db.models.fields.DateTimeField')()),
-            ('isTipVerified', self.gf('django.db.models.fields.BooleanField')()),
+            ('isPredictionVerified', self.gf('django.db.models.fields.CharField')(max_length=50)),
+            ('verified', self.gf('django.db.models.fields.BooleanField')()),
+            ('covered', self.gf('django.db.models.fields.BooleanField')()),
         ))
         db.send_create_signal(u'Api', ['Prediction'])
 
@@ -148,15 +150,17 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'Prediction'},
             'awayTeam': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'statusPrediction_away_team'", 'to': u"orm['Api.Team']"}),
             'completedText': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['Api.CompletedText']"}),
+            'covered': ('django.db.models.fields.BooleanField', [], {}),
             'flagURL': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'homeTeam': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'statusPrediction_home_team'", 'to': u"orm['Api.Team']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'isCompleted': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'isPredictionVerified': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'isPushNotifSend': ('django.db.models.fields.BooleanField', [], {}),
-            'isTipVerified': ('django.db.models.fields.BooleanField', [], {}),
             'league': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['Api.League']"}),
             'leagueType': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['Api.LeagueType']"}),
-            'prediction': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['Api.PredictionDetail']"})
+            'tipDetail': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['Api.PredictionDetail']"}),
+            'verified': ('django.db.models.fields.BooleanField', [], {})
         },
         u'Api.predictiondetail': {
             'Meta': {'object_name': 'PredictionDetail'},
