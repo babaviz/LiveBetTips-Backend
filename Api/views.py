@@ -100,6 +100,7 @@ def login(request):
          return Response(status=status.HTTP_409_CONFLICT)
      
      profile = Profile.objects.get(username = user.email) 
+     profile.id = user.id
      profileSerializer = ProfileSerializer(profile)  
      if check_password(request.DATA["password"],user.password) :
         
