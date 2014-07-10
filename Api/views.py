@@ -27,8 +27,8 @@ def registration(request):
     except:
         post_values = request.DATA.copy()
         password = post_values["password"]
-        password = make_password(password)
-        post_values["password"] = password  
+        #   password = make_password(password)
+        #   post_values["password"] = password  
         #   request.DATA["password"]=make_password(request.DATA["password"])
         serializer =  tempUserSerializer(data=post_values)
         if serializer.is_valid():
@@ -42,6 +42,7 @@ def registration(request):
                      + "/"+profile.username,'no-reply@LiveBetTips.com',[profile.username],fail_silently=False)
            return Response(serializer.data,status=status.HTTP_201_CREATED)
         return Response(serializer.errors,status = status.HTTP_409_CONFLICT)
+
     return Response(status = status.HTTP_409_CONFLICT)
 
 def confirmation(request,confirmation_code,emailID):
