@@ -27,8 +27,8 @@ def registration(request):
     except:
         post_values = request.DATA.copy()
         password = post_values["password"]
-        #   password = make_password(password)
-        #   post_values["password"] = password  
+        password = make_password(password)
+        post_values["password"] = password  
         #   request.DATA["password"]=make_password(request.DATA["password"])
         serializer =  tempUserSerializer(data=post_values)
         if serializer.is_valid():
