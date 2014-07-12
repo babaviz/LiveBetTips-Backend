@@ -124,7 +124,7 @@ def contactUs(request) :
    return Response(status = status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
-#@permission_classes((IsAuthenticated ,))
+@permission_classes((IsAuthenticated ,))
 def showPredictions(request):
      
     if request.method=='GET':
