@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from Api.models import tempUser,Profile,PredictionDetail,Team,LeagueType,Prediction,CompletedText,League,PurchasedPrediction
-from Api.serializer import tempUserSerializer,ProfileSerializer,PredictionSerializer,PredictionDSerializer
+from Api.serializer import tempUserSerializer,ProfileSerializer,PredictionSerializer,PredictionDSerializer,UserSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view,permission_classes	
 from rest_framework import status
@@ -13,7 +13,8 @@ from django.http import HttpResponse
 from django.contrib.auth.hashers import make_password,check_password
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
-import base64 
+import base64,json
+from django.utils import simplejson
 
 URL = "178.21.172.107"
 @api_view(['POST'])
@@ -29,7 +30,6 @@ def registration(request):
         password = post_values["password"]
         password = make_password(password)
         post_values["password"] = password  
-        #   request.DATA["password"]=make_password(request.DATA["password"])
         serializer =  tempUserSerializer(data=post_values)
         if serializer.is_valid():
            serializer.save()
@@ -103,12 +103,16 @@ def login(request):
          except : 
             return Response(status=status.HTTP_404_NOT_FOUND)
          return Response(status=status.HTTP_409_CONFLICT)
-     
+   
      profile = Profile.objects.get(username = user.email) 
-     profileSerializer = ProfileSerializer(profile)  
+     
+     response_data = {}
+     response_data['id'] = user.id
+     response_data['authToken'] = profile.authToken
+    
      if check_password(request.DATA["password"],user.password) :
         
-        return Response(profileSerializer.data,status = status.HTTP_200_OK)
+        return HttpResponse(json.dumps(response_data))
      return Response(profileSerializer.errors,status = status.HTTP_401_UNAUTHORIZED) 
     
 @api_view(['POST'])
@@ -124,12 +128,11 @@ def contactUs(request) :
    return Response(status = status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
-@permission_classes((IsAuthenticated ,))
 def showPredictions(request):
      
     if request.method=='GET':
       try:
-       predictions = Prediction.objects.filter(isPushNotifSend=request.GET.get('isPushed',''))
+       predictions = Prediction.objects.filter(isPushNotifSend=request.GET.get('isPushed',0))
       except : 
          return Response(status = status.HTTP_404_NOT_FOUND)    
            

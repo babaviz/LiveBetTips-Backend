@@ -31,3 +31,13 @@ class PredictionDSerializer(serializers.ModelSerializer):
      class Meta : 
          model = PredictionDetail
          fields = ('id','name','message')
+
+class UserSerializer(serializers.ModelSerializer):
+      #authToken = serializers.PrimaryKeyRelatedField(many=True)
+      profile = ProfileSerializer()    
+  
+      class Meta :
+         model = User
+           
+
+
