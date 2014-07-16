@@ -47,8 +47,12 @@ INSTALLED_APPS = (
     'rest_framework',
     'Api',
     'south',
+    "push_notifications",
 )
 
+PUSH_NOTIFICATION_SETTINGS = {
+          "GCM_API_KEY" : "AIzaSyDZHaoLoI5zLUGwdq3f9eW4yQ8UVyVoyqA"
+}
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
