@@ -112,7 +112,8 @@ def login(request):
     
      if check_password(request.DATA["password"],user.password) :
         gcmUser = GcmUser(userID = user.id , gcmID = request.DATA["gcm_id"])
-        
+        gcmUser.save()
+
         return HttpResponse(json.dumps(response_data))
      return Response(profileSerializer.errors,status = status.HTTP_401_UNAUTHORIZED) 
     
