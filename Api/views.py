@@ -15,6 +15,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
 import base64,json
 from django.utils import simplejson
+from push_notifications.models import APNSDevice, GCMDevice
 
 URL = "178.21.172.107"
 @api_view(['POST'])
@@ -111,9 +112,8 @@ def login(request):
      response_data['authToken'] = profile.authToken
     
      if check_password(request.DATA["password"],user.password) :
-        gcmUser = GcmUser(userID = user.id , gcmID = request.DATA["gcm_id"])
-        gcmUser.save()
-
+        device = GCMDevice(user = user , registration_id = request.DATA["gcm_id"])        
+        device.save()
         return HttpResponse(json.dumps(response_data))
      return Response(profileSerializer.errors,status = status.HTTP_401_UNAUTHORIZED) 
     

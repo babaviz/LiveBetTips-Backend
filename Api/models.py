@@ -2,6 +2,7 @@ from django.db import models
 import datetime
 from django.forms import ModelForm
 from django.contrib.auth.models import User
+from push_notifications.models import APNSDevice, GCMDevice
 
 class tempUser(models.Model):
     email    = models.EmailField(max_length=100,unique=True,blank=False)
@@ -88,6 +89,9 @@ class Prediction(models.Model):
             self.isPredictionVerified = "not verified"                       
 	 
          return super(Prediction,self).save(*args,**kwargs)     
+         if(self.isPushNotifSend):
+           device = GCMDevice.objects.get.all()
+           device.send_message("Tip is Updated")             
           
 class PurchasedPrediction(models.Model):
       userID = models.IntegerField()

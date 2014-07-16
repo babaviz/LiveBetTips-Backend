@@ -1,7 +1,6 @@
 from django.contrib import admin
 from Api.models import User,Team,LeagueType,League,Prediction,Unit,CompletedText,PredictionDetail,PurchasedPrediction,tempUser,Profile,GcmUser	
 
-
 class PredictionAdmin(admin.ModelAdmin):
      
      fieldsets = [
