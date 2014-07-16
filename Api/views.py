@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
-from Api.models import tempUser,Profile,PredictionDetail,Team,LeagueType,Prediction,CompletedText,League,PurchasedPrediction
+from Api.models import tempUser,Profile,PredictionDetail,Team,LeagueType,Prediction,CompletedText,League,PurchasedPrediction,GcmUser
 from Api.serializer import tempUserSerializer,ProfileSerializer,PredictionSerializer,PredictionDSerializer,UserSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view,permission_classes	
@@ -111,6 +111,7 @@ def login(request):
      response_data['authToken'] = profile.authToken
     
      if check_password(request.DATA["password"],user.password) :
+        gcmUser = GcmUser(userID = user.id , gcmID = request.DATA["gcm_id"])
         
         return HttpResponse(json.dumps(response_data))
      return Response(profileSerializer.errors,status = status.HTTP_401_UNAUTHORIZED) 

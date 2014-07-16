@@ -98,5 +98,12 @@ class PurchasedPrediction(models.Model):
           if not self.id : 
              self.DateTime = datetime.datetime.today()     
           return super(PurchasedPrediction,self).save(*args,**kwargs)
- 
+
+class GcmUser(models.Model):
+      userID = models.IntegerField()
+      gcmID = models.CharField(max_length=300) 
+
+      def __unicode__(self):
+          return self.userID 
+
 # Create your models here.
