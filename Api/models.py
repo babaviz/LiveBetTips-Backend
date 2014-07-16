@@ -101,9 +101,6 @@ class PurchasedPrediction(models.Model):
 
 class GcmUser(models.Model):
       userID = models.IntegerField()
-      gcmID = models.CharField(max_length=300) 
-
-      def __unicode__(self):
-          return self.userID 
+      gcmID = models.TextField(max_length=500) 
 
 # Create your models here.
