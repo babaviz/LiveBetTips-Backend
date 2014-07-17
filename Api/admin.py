@@ -14,7 +14,7 @@ class PredictionAdmin(admin.ModelAdmin):
 #class UserAdmin(admin.ModelAdmin):
 #     list_display = ('id','email','password','DateTimeVerified')
 
-class LeagueAdmin(admin.ModelAdmin):
+class LeagueTypeAdmin(admin.ModelAdmin):
      list_display = ('name','countryFlagUrl')
 
 class PredictionDetailAdmin(admin.ModelAdmin):
@@ -25,8 +25,8 @@ class PurchasedPredictionAdmin(admin.ModelAdmin):
 
 #admin.site.register(User,UserAdmin)
 admin.site.register(Team)
-admin.site.register(LeagueType)
-admin.site.register(League,LeagueAdmin)
+admin.site.register(LeagueType,LeagueTypeAdmin)
+admin.site.register(League)
 admin.site.register(Prediction,PredictionAdmin)
 admin.site.register(Unit)
 admin.site.register(CompletedText)

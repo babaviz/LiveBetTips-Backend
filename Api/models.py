@@ -28,14 +28,13 @@ class Team(models.Model):
 
 class LeagueType(models.Model):
      name = models.CharField(max_length=200,unique=True,primary_key=True)
+     countryFlagUrl = models.ImageField(upload_to='flags/',default='flags/none/no-img.jpg')
 
      def __unicode__(self):
         return self.name
 
 class League(models.Model):
      name = models.CharField(max_length=200,unique=True,primary_key=True)
-     countryFlagUrl = models.ImageField(upload_to='flags/',default='flags/none/no-img.jpg')
- 
 
      def __unicode__(self):
         return self.name
@@ -78,7 +77,7 @@ class Prediction(models.Model):
   
      def save(self,*args,**kwargs):
           
-         self.flagURL = self.league.countryFlagUrl
+         self.flagURL = self.leagueType.countryFlagUrl
          if self.verified:
             self.isPredictionVerified = "Verified"
          elif self.covered:
