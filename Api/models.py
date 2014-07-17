@@ -80,18 +80,20 @@ class Prediction(models.Model):
           
          self.flagURL = self.league.countryFlagUrl
          if self.verified:
-            self.isPredictionVerified = "verified"
+            self.isPredictionVerified = "Verified"
          elif self.covered:
-            self.isPredictionVerified = "covered"
+            self.isPredictionVerified = "Covered"
          elif self.pending : 
-            self.isPredictionVerified = "pending"
+            self.isPredictionVerified = "Pending"
          else : 
-            self.isPredictionVerified = "not verified"                       
+            self.isPredictionVerified = "Not-Verified"                       
 	 
+         if self.isPushNotifSend :
+            devices =  GCMDevice.objects.all()
+            devices.send_message({"message" : "New Prediction available"})
+                    
          return super(Prediction,self).save(*args,**kwargs)     
-         if(self.isPushNotifSend):
-           device = GCMDevice.objects.get.all()
-           device.send_message("Tip is Updated")             
+                      
           
 class PurchasedPrediction(models.Model):
       userID = models.IntegerField()
