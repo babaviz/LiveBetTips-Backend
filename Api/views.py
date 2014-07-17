@@ -125,8 +125,10 @@ def push_notification(user,gcm_type,gcm_id):
        except : 
           new_device = GCMDevice(user = user,registration_id = gcm_id) 
           new_device.save()
+          return 
        old_device.delete()
        push_notification(user,gcm_type,gcm_id)
+       
      
 @api_view(['POST'])
 @permission_classes((IsAuthenticated ,))
