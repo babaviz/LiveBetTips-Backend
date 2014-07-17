@@ -123,7 +123,7 @@ def push_notification(user,gcm_type,gcm_id):
        try : 
           old_device = GCMDevice.objects.get(registration_id = gcm_id)
        except : 
-          new_device = GCMDevice(user = user,registration_id = request.DATA["gcm_id"]) 
+          new_device = GCMDevice(user = user,registration_id = gcm_id) 
           new_device.save()
        old_device.delete()
        push_notification(user,gcm_type,gcm_id)
