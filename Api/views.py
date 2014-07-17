@@ -126,7 +126,7 @@ def login(request):
            return HttpResponse(json.dumps(response_data))
 
         return HttpResponse(json.dumps(response_data))
-     return Response(profileSerializer.errors,status = status.HTTP_401_UNAUTHORIZED) 
+     return Response(status = status.HTTP_401_UNAUTHORIZED) 
     
 @api_view(['POST'])
 @permission_classes((IsAuthenticated ,))
