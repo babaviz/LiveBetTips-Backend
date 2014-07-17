@@ -112,24 +112,22 @@ def login(request):
      response_data['authToken'] = profile.authToken
     
      if check_password(request.DATA["password"],user.password) :
-        
-        push_notification(user,request.DATA["gcm_type"],request.DATA["gcm_id"])
+        if request.DATA["gcm_type"] == "Android" :
+           gcm_id = request.DATA["gcm_id"]
+           new_device = GCMDevice(user = user,registration_id = gcm_id)
+           #check if gcm_id already exists . If so then delete the old device and create new .
+           try :
+              old_device = GCMDevice.objects.get(registration_id = gcm_id)
+           except :
+              new_device.save()
+              return HttpResponse(json.dumps(response_data))
+           old_device.delete()
+           new_device.save()
+           return HttpResponse(json.dumps(response_data))
+
         return HttpResponse(json.dumps(response_data))
      return Response(profileSerializer.errors,status = status.HTTP_401_UNAUTHORIZED) 
     
-def push_notification(user,gcm_type,gcm_id):
-    if gcm_type == "Android" : 
-       #check if gcm_id already exists . If so then delete the old device and create new .
-       try : 
-          old_device = GCMDevice.objects.get(registration_id = gcm_id)
-       except : 
-          new_device = GCMDevice(user = user,registration_id = gcm_id) 
-          new_device.save()
-          return 
-       old_device.delete()
-       push_notification(user,gcm_type,gcm_id)
-       
-     
 @api_view(['POST'])
 @permission_classes((IsAuthenticated ,))
 def contactUs(request) :
