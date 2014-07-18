@@ -88,7 +88,7 @@ class Prediction(models.Model):
             self.isPredictionVerified = "Not-Verified"                       
 	 
          if self.isPushNotifSend :
-            devices =  GCMDevice.objects.get(active = True)
+            devices =  GCMDevice.objects.filter(active = True)
             devices.send_message({"message" : "New Prediction available"})
                     
          return super(Prediction,self).save(*args,**kwargs)     
