@@ -212,7 +212,7 @@ def userPredictions(request,userID):
        return Response(predictSerializer.data , status = status.HTTP_200_OK)
 
 @api_view(['POST'])
-@permission_classes(IsAuthenticated ,))
+@permission_classes((IsAuthenticated ,))
 def logout(request):
     if request.method == 'POST' :
        try : 
