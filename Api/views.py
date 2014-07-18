@@ -218,10 +218,10 @@ def logout(request):
        try : 
           device = GCMDevice.objects.get(registration_id = request.DATA["deviceID"])
        except :
-          return Reponse(status = status.HTTP_404_BAD_REQUEST)
+          return Reponse(status = status.HTTP_400_BAD_REQUEST)
        device.active = False;
        device.save()
-       return Response(status = status.HTTP_404_BAD_REQUEST)
+       return Response(status = status.HTTP_200_OK)
 
  
 
