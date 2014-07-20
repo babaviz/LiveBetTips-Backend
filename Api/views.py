@@ -120,12 +120,12 @@ def login(request):
               old_device = GCMDevice.objects.get(registration_id = gcm_id)
            except :
               new_device.save()
-              return HttpResponse(json.dumps(response_data))
+              return HttpResponse(json.dumps(response_data),content_type="application/json")
            old_device.delete()
            new_device.save()
-           return HttpResponse(json.dumps(response_data))
+           return HttpResponse(json.dumps(response_data),content_type="application/json")
 
-        return HttpResponse(json.dumps(response_data),content='application/json')
+        return HttpResponse(json.dumps(response_data),content_type="application/json")
      return Response(status = status.HTTP_401_UNAUTHORIZED) 
     
 @api_view(['POST'])
