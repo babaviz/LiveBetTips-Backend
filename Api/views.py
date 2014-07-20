@@ -125,7 +125,7 @@ def login(request):
            new_device.save()
            return HttpResponse(json.dumps(response_data))
 
-        return HttpResponse(json.dumps(response_data))
+        return HttpResponse(json.dumps(response_data),content='application/json')
      return Response(status = status.HTTP_401_UNAUTHORIZED) 
     
 @api_view(['POST'])
