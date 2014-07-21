@@ -223,6 +223,24 @@ def logout(request):
        device.save()
        return Response(status = status.HTTP_200_OK)
 
+@api_view(['GET'])
+def filter(request):
+    if request.method == 'GET' :
+       try : 
+          leagueType = LeagueType.objects.all()
+          predictionDetail = PredictionDetail.objects.all() 
+       except :  
+          return Response(status = status.HTTP_400_BAD_REQUEST)
+       list = []
+       for league in leagueType :
+          response_data = {}
+          response_data['league'] = league.name
+          list.append(response_data) 
+       for prediction in predictionDetail:
+          response_data = {}
+          response_data['predictionName'] = prediction.name
+          list.append(response_data)
+       return HttpResponse(json.dumps(list),content_type="application/json")
  
 
 
