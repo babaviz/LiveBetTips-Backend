@@ -52,6 +52,7 @@ INSTALLED_APPS = (
 
 PUSH_NOTIFICATIONS_SETTINGS = {
           "GCM_API_KEY" : "AIzaSyDZHaoLoI5zLUGwdq3f9eW4yQ8UVyVoyqA"
+          "APNS_CERTIFICATE": "/nopassck.pem",
 }
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',

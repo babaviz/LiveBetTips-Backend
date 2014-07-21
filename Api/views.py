@@ -125,7 +125,20 @@ def login(request):
            new_device.save()
            return HttpResponse(json.dumps(response_data),content_type="application/json")
 
+        elif request.DATA["deviceType"] == "ios" :
+             apns_id = request.DATA["deviceID"]
+             new_device = APNSDevice(user = user,registration_id = apns_id)
+           #check if gcm_id already exists . If so then delete the old device and create new .
+             try :
+                old_device = APNSDevice.objects.get(registration_id = apns_id)
+             except :
+                new_device.save()
+                return HttpResponse(json.dumps(response_data),content_type="application/json")
+             old_device.delete()
+             new_device.save()
+             return HttpResponse(json.dumps(response_data),content_type="application/json")
         return HttpResponse(json.dumps(response_data),content_type="application/json")
+
      return Response(status = status.HTTP_401_UNAUTHORIZED) 
     
 @api_view(['POST'])

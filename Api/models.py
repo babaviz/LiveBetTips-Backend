@@ -90,6 +90,7 @@ class Prediction(models.Model):
          if self.isPushNotifSend :
             devices =  GCMDevice.objects.filter(active = True)
             devices.send_message({"message" : "New Prediction available"})
+            appledevice = APNSDevice.objects.get(active = True)
                     
          return super(Prediction,self).save(*args,**kwargs)     
                       
