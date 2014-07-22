@@ -256,5 +256,50 @@ def filter(request):
        response_data['predictionName']= list2
        return HttpResponse(json.dumps(response_data),content_type="application/json")
  
+@api_view(['GET'])
+def filterPredictions(request):
+    if request.method == 'GET':
+       league = request.GET.get('league','null')
+       predictionName = request.GET.get('predictionName','null')   
+       if league != 'null' and predictionName == 'null' : 
+          try :
+             filter_predictions = Prediction.objects.filter(leagueType_id=request.GET.get('league',0))
+          except :
+             return Response(status = status.HTTP_404_NOT_FOUND)
+
+          predictions = PredictionSerializer(filter_predictions) 
+          return Response(predictions.data,status = status.HTTP_200_OK)
+       elif league == 'null' and predictionName != 'null' :
+            try :
+               tips = PredictionDetail.objects.filter(name = predictionName) 
+               predictions = Prediction.objects.all()
+            except :
+               return Response(status = status.HTTP_404_NOT_FOUND)
+            
+            filter_predictions = []
+            for tip in tips :
+                for prediction in predictions:
+                      if prediction.tipDetail_id == tip.id :
+                         filter_predictions.append(prediction)     
+            
+            predictions = PredictionSerializer(filter_predictions) 
+            return Response(predictions.data,status = status.HTTP_200_OK)
+       else :      
+            try:
+                 filter_predictions = Prediction.objects.filter(leagueType_id=request.GET.get('league',0))        
+                 tips = PredictionDetail.objects.filter(name = predictionName)
+            except :
+                 return Response(status = status.HTTP_404_NOT_FOUND)
+           
+            predictions = []
+            for tip in tips :
+                for prediction in filter_predictions:
+                    if prediction.tipDetail_id == tip.id :
+                       predictions.append(prediction)               
+
+            serialPredictions = PredictionSerializer(predictions)
+            return Response(serialPredictions.data,status = status.HTTP_200_OK)
+
+            
 
 

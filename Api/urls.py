@@ -13,6 +13,7 @@ urlpatterns=patterns('Api.views',
    url(r'^predictions/$','showPredictions'),
    url(r'^user/(?P<userID>\w{0,50})/prediction/(?P<tipID>\w{0,50})/$','predictionDetail'),
    url(r'^user/(?P<userID>\w{0,50})/predictions','userPredictions'),
-   url(r'^predictions/filter','filter'),
+   url(r'^filter/$','filter'),
+   url(r'^predictions/filter/$','filterPredictions'),
 )
  
