@@ -1,5 +1,5 @@
 from django.contrib import admin
-from Api.models import User,Team,LeagueType,League,Prediction,Unit,CompletedText,PredictionDetail,PurchasedPrediction,tempUser,Profile,GcmUser	
+from Api.models import User,Team,LeagueType,League,Prediction,Unit,CompletedText,PredictionDetail,PurchasedPrediction,tempUser,Profile	
 
 class PredictionAdmin(admin.ModelAdmin):
      
@@ -32,7 +32,7 @@ admin.site.register(Unit)
 admin.site.register(CompletedText)
 admin.site.register(PredictionDetail,PredictionDetailAdmin)
 admin.site.register(PurchasedPrediction,PurchasedPredictionAdmin)
-admin.site.register(GcmUser)
+
 #admin.site.register(tempUser)
 #admin.site.register(Profile)
 
