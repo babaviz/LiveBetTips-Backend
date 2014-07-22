@@ -105,8 +105,6 @@ class PurchasedPrediction(models.Model):
              self.DateTime = datetime.datetime.today()     
           return super(PurchasedPrediction,self).save(*args,**kwargs)
 
-class GcmUser(models.Model):
-      userID = models.IntegerField()
-      gcmID = models.TextField(max_length=500) 
+
 
 # Create your models here.

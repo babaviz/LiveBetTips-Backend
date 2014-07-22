@@ -240,20 +240,21 @@ def logout(request):
 def filter(request):
     if request.method == 'GET' :
        try : 
-          leagueType = LeagueType.objects.all()
-          predictionDetail = PredictionDetail.objects.all() 
+          leagueType = LeagueType.objects.values_list('name', flat=True).distinct()
+          predictionDetail = PredictionDetail.objects.values_list('name', flat=True).distinct()
        except :  
           return Response(status = status.HTTP_400_BAD_REQUEST)
-       list = []
+       list1 = []
+       list2 = []
+       response_data = {}
        for league in leagueType :
-          response_data = {}
-          response_data['league'] = league.name
-          list.append(response_data) 
+          list1.append((league))
+ 	
        for prediction in predictionDetail:
-          response_data = {}
-          response_data['predictionName'] = prediction.name
-          list.append(response_data)
-       return HttpResponse(json.dumps(list),content_type="application/json")
+          list2.append((prediction))
+       response_data['leagueType'] = list1
+       response_data['predictionName']= list2
+       return HttpResponse(json.dumps(response_data),content_type="application/json")
  
 
 
