@@ -263,7 +263,7 @@ def filterPredictions(request):
        predictionName = request.GET.get('predictionName','null')   
        if league != 'null' and predictionName == 'null' : 
           try :
-             filter_predictions = Prediction.objects.filter(leagueType_id=request.GET.get('league',0))
+             filter_predictions = Prediction.objects.filter(leagueType_id=request.GET.get('league',0),isPushNotifSend=True)
           except :
              return Response(status = status.HTTP_404_NOT_FOUND)
 
@@ -272,7 +272,7 @@ def filterPredictions(request):
        elif league == 'null' and predictionName != 'null' :
             try :
                tips = PredictionDetail.objects.filter(name = predictionName) 
-               predictions = Prediction.objects.all()
+               predictions = Prediction.objects.filter(isPushNotifSend=True)
             except :
                return Response(status = status.HTTP_404_NOT_FOUND)
             
@@ -286,7 +286,7 @@ def filterPredictions(request):
             return Response(predictions.data,status = status.HTTP_200_OK)
        else :      
             try:
-                 filter_predictions = Prediction.objects.filter(leagueType_id=request.GET.get('league',0))        
+                 filter_predictions = Prediction.objects.filter(leagueType_id=request.GET.get('league',0),isPushNotifSend=True)        
                  tips = PredictionDetail.objects.filter(name = predictionName)
             except :
                  return Response(status = status.HTTP_404_NOT_FOUND)
