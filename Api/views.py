@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
-from Api.models import tempUser,Profile,PredictionDetail,Team,LeagueType,Prediction,CompletedText,League,PurchasedPrediction
+from Api.models import tempUser,Profile,PredictionDetail,Team,LeagueType,Prediction,CompletedText,League,PurchasedPrediction,PurchasedCredit
 from Api.serializer import tempUserSerializer,ProfileSerializer,PredictionSerializer,PredictionDSerializer,UserSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view,permission_classes	
@@ -300,6 +300,23 @@ def filterPredictions(request):
             serialPredictions = PredictionSerializer(predictions)
             return Response(serialPredictions.data,status = status.HTTP_200_OK)
 
-            
+@api_view(['POST'])
+@permission_classes((IsAuthenticated ,))
+def creditsPurchased(request):
+    if request.method == 'POST':
+       try : 
+           user = PurchasedCredit.objects.filter(userID = request.DATA["userID"])
+       except : 
+          return Response(status = status.HTTP_400_BAD_REQUEST)
 
+       credits = 0       
+       credit = int(request.DATA["credit"])
+       for temp in user : 
+           credits += temp.credit
+               
+       credit = PurchasedCredit(userID = request.DATA["userID"],credit = credits+credit,creditID = request.DATA["creditID"])
+       credit.save()
+       return Response(status = status.HTTP_200_OK)
+
+     
 

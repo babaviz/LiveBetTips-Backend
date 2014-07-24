@@ -1,5 +1,5 @@
 from django.contrib import admin
-from Api.models import User,Team,LeagueType,League,Prediction,Unit,CompletedText,PredictionDetail,PurchasedPrediction,tempUser,Profile	
+from Api.models import User,Team,LeagueType,League,Prediction,Unit,CompletedText,PredictionDetail,PurchasedPrediction,tempUser,Profile,Credit,PurchasedCredit
 
 class PredictionAdmin(admin.ModelAdmin):
      
@@ -13,6 +13,9 @@ class PredictionAdmin(admin.ModelAdmin):
 
 #class UserAdmin(admin.ModelAdmin):
 #     list_display = ('id','email','password','DateTimeVerified')
+
+class PurchasedCreditAdmin(admin.ModelAdmin):
+      list_display = ('id','userID','dateTime','credit','creditID')
 
 class LeagueTypeAdmin(admin.ModelAdmin):
      list_display = ('name','countryFlagUrl')
@@ -29,6 +32,8 @@ admin.site.register(LeagueType,LeagueTypeAdmin)
 admin.site.register(League)
 admin.site.register(Prediction,PredictionAdmin)
 admin.site.register(Unit)
+admin.site.register(PurchasedCredit,PurchasedCreditAdmin)
+admin.site.register(Credit)
 admin.site.register(CompletedText)
 admin.site.register(PredictionDetail,PredictionDetailAdmin)
 admin.site.register(PurchasedPrediction,PurchasedPredictionAdmin)

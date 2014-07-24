@@ -105,6 +105,24 @@ class PurchasedPrediction(models.Model):
              self.DateTime = datetime.datetime.today()     
           return super(PurchasedPrediction,self).save(*args,**kwargs)
 
+class Credit(models.Model):
+       name = models.CharField(max_length=30)
+
+       def __unicode__(self):
+           return self.name
+
+class PurchasedCredit(models.Model):
+       userID = models.IntegerField()
+       dateTime = models.DateTimeField(editable = False)
+       credit = models.IntegerField()
+       creditID = models.IntegerField()
+       
+       def save(self, *args, **kwargs):
+           ''' On save, update timestamps '''
+           if not self.id:
+              self.dateTime = datetime.datetime.today()
+           return super(PurchasedCredit,self).save(*args, **kwargs)
+
 
 
 # Create your models here.

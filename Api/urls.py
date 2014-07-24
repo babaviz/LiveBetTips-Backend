@@ -15,5 +15,7 @@ urlpatterns=patterns('Api.views',
    url(r'^user/(?P<userID>\w{0,50})/predictions','userPredictions'),
    url(r'^filter/$','filter'),
    url(r'^predictions/filter/$','filterPredictions'),
+   url(r'^user/credit/buy/$','creditsPurchased'),
+
 )
  
