@@ -304,17 +304,8 @@ def filterPredictions(request):
 @permission_classes((IsAuthenticated ,))
 def creditsPurchased(request):
     if request.method == 'POST':
-       try : 
-           user = PurchasedCredit.objects.filter(userID = request.DATA["userID"])
-       except : 
-          return Response(status = status.HTTP_400_BAD_REQUEST)
-
-       credits = 0       
-       credit = int(request.DATA["credit"])
-       for temp in user : 
-           credits += temp.credit
-               
-       credit = PurchasedCredit(userID = request.DATA["userID"],credit = credits+credit,creditID = request.DATA["creditID"])
+                             
+       credit = PurchasedCredit(userID = request.DATA["userID"],credit =request.DATA["credit"],creditID = request.DATA["creditID"])
        credit.save()
        return Response(status = status.HTTP_200_OK)
 
