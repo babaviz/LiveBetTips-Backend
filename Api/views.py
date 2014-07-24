@@ -16,6 +16,7 @@ from rest_framework.authtoken.models import Token
 import base64,json
 from django.utils import simplejson
 from push_notifications.models import APNSDevice, GCMDevice
+from django.db.models import Sum
 
 URL = "178.21.172.107"
 @api_view(['POST'])
@@ -106,10 +107,11 @@ def login(request):
          return Response(status=status.HTTP_409_CONFLICT)
    
      profile = Profile.objects.get(username = user.email) 
-     
+     usercredit = PurchasedCredit.objects.filter(userID = user.id)
      response_data = {}
      response_data['id'] = user.id
      response_data['authToken'] = profile.authToken
+     response_data['usercredit'] = usercredit.aggregate(Sum('credit')).get('credit__sum',0.00)
     
      if check_password(request.DATA["password"],user.password) :
         if request.DATA["deviceType"] == "Android" :
