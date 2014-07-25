@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
-from Api.models import tempUser,Profile,PredictionDetail,Team,LeagueType,Prediction,CompletedText,League,PurchasedPrediction,PurchasedCredit,UserCredit
+from Api.models import tempUser,Profile,PredictionDetail,Team,LeagueType,Prediction,CompletedText,League,PurchasedPrediction,PurchasedCredit,UserCredit,Unit
 from Api.serializer import tempUserSerializer,ProfileSerializer,PredictionSerializer,PredictionDSerializer,UserSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view,permission_classes	
@@ -250,6 +250,7 @@ def filter(request):
        try : 
           leagueType = LeagueType.objects.values_list('name', flat=True).distinct()
           predictionDetail = PredictionDetail.objects.values_list('name', flat=True).distinct()
+          units = Unit.objects.latest('id')
        except :  
           return Response(status = status.HTTP_400_BAD_REQUEST)
        list1 = []
@@ -262,6 +263,7 @@ def filter(request):
           list2.append((prediction))
        response_data['leagueType'] = list1
        response_data['predictionName']= list2
+       response_data['units']=units.value
        return HttpResponse(json.dumps(response_data),content_type="application/json")
  
 @api_view(['GET'])
@@ -347,5 +349,5 @@ def predictionPurchased(request):
           usercredit.credit = usercredit.credit - 1
           usercredit.save()
           return Response(status = status.HTTP_200_OK)
-       else 
+       else :
           return Response(status = status.HTTP_401_UNAUTHORIZED)
