@@ -58,7 +58,8 @@ def confirmation(request,confirmation_code,emailID):
    if profile.confirmationCode == confirmation_code:
       user = User(username=temp_user.email, email = temp_user.email ,password = temp_user.password)                 
       user.save()
-      
+      usercredit = UserCredit(user = temp_user , credit = 1)
+      usercredit.save()      
       temp_user.delete()
       return HttpResponse("Thankyou! Your account has been activated .Now you can login")
    return HttpResponse("Sorry your account couldn't be activated this time. Please try again later")
