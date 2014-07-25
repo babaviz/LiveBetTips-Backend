@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
-from Api.models import tempUser,Profile,PredictionDetail,Team,LeagueType,Prediction,CompletedText,League,PurchasedPrediction,PurchasedCredit
+from Api.models import tempUser,Profile,PredictionDetail,Team,LeagueType,Prediction,CompletedText,League,PurchasedPrediction,PurchasedCredit,UserCredit
 from Api.serializer import tempUserSerializer,ProfileSerializer,PredictionSerializer,PredictionDSerializer,UserSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view,permission_classes	
@@ -107,11 +107,11 @@ def login(request):
          return Response(status=status.HTTP_409_CONFLICT)
    
      profile = Profile.objects.get(username = user.email) 
-     usercredit = PurchasedCredit.objects.filter(userID = user.id)
+     usercredit = UserCredit.objects.get(user_id = user.id)
      response_data = {}
      response_data['id'] = user.id
      response_data['authToken'] = profile.authToken
-     response_data['usercredit'] = usercredit.aggregate(Sum('credit')).get('credit__sum',0.00)
+     response_data['usercredit'] = usercredit.credit
     
      if check_password(request.DATA["password"],user.password) :
         if request.DATA["deviceType"] == "Android" :
@@ -306,10 +306,37 @@ def filterPredictions(request):
 @permission_classes((IsAuthenticated ,))
 def creditsPurchased(request):
     if request.method == 'POST':
-                             
+       
+       purchaseCredit = int(request.DATA["credit"])
+       try:
+          user = User.objects.get(id = request.DATA["userID"])
+       except:
+          return Response(status= status.HTTP_400_BAD_REQUEST)                 
+       
        credit = PurchasedCredit(userID = request.DATA["userID"],credit =request.DATA["credit"],creditID = request.DATA["creditID"])
        credit.save()
+
+       try :
+          user_credit = UserCredit.objects.get(user_id = user.id)
+       except :
+          usercredit = UserCredit ( user = user , credit = purchaseCredit)
+          usercredit.save()
+          return Response(status = status.HTTP_200_OK) 
+       user_credit.credit += purchaseCredit 
+       user_credit.save()
+
        return Response(status = status.HTTP_200_OK)
 
-     
-
+@api_view(["POST"])
+@permission_classes((IsAuthenticated ,))
+def predictionPurchased(request):
+    if request.method == 'POST' : 
+       try : 
+         usercredit = UserCredit.objects.get(user_id = request.DATA["userID"])      
+       except:
+         return Respones(status= status.HTTP_401_UNAUTHORIZED)
+       purchasedPrediction = PurchasedPrediction(userID = request.DATA["userID"] , predictionID = request.DATA["predictionID"])
+       purchasedPrediction.save()       
+       usercredit.credit = usercredit.credit - 1
+       usercredit.save()
+       return Response(status = status.HTTP_200_OK)

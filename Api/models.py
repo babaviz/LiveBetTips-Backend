@@ -123,6 +123,10 @@ class PurchasedCredit(models.Model):
               self.dateTime = datetime.datetime.today()
            return super(PurchasedCredit,self).save(*args, **kwargs)
 
+class UserCredit(models.Model):
+      user = models.ForeignKey(User)
+      credit = models.IntegerField()
+
 
 
 # Create your models here.

@@ -16,6 +16,8 @@ urlpatterns=patterns('Api.views',
    url(r'^filter/$','filter'),
    url(r'^predictions/filter/$','filterPredictions'),
    url(r'^user/credit/buy/$','creditsPurchased'),
+   url(r'^user/prediction/buy/$','predictionPurchased'),
+
 
 )
  
