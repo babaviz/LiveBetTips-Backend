@@ -341,8 +341,11 @@ def predictionPurchased(request):
          usercredit = UserCredit.objects.get(user_id = request.DATA["userID"])      
        except:
          return Respones(status= status.HTTP_401_UNAUTHORIZED)
-       purchasedPrediction = PurchasedPrediction(userID = request.DATA["userID"] , predictionID = request.DATA["predictionID"])
-       purchasedPrediction.save()       
-       usercredit.credit = usercredit.credit - 1
-       usercredit.save()
-       return Response(status = status.HTTP_200_OK)
+       if usercredit.credit != 0 :
+          purchasedPrediction = PurchasedPrediction(userID = request.DATA["userID"] , predictionID = request.DATA["predictionID"])
+          purchasedPrediction.save()       
+          usercredit.credit = usercredit.credit - 1
+          usercredit.save()
+          return Response(status = status.HTTP_200_OK)
+       else 
+          return Response(status = status.HTTP_401_UNAUTHORIZED)
