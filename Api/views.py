@@ -107,12 +107,17 @@ def login(request):
             return Response(status=status.HTTP_404_NOT_FOUND)
          return Response(status=status.HTTP_409_CONFLICT)
    
-     profile = Profile.objects.get(username = user.email) 
-     usercredit = UserCredit.objects.get(user_id = user.id)
+     try:
+          profile = Profile.objects.get(username = user.email) 
+          usercredit = UserCredit.objects.get(user_id = user.id)
+          credit = usercredit.credit
+     except : 
+          credit = 0 
+     
      response_data = {}
      response_data['id'] = user.id
      response_data['authToken'] = profile.authToken
-     response_data['usercredit'] = usercredit.credit
+     response_data['usercredit'] = credit 
     
      if check_password(request.DATA["password"],user.password) :
         if request.DATA["deviceType"] == "Android" :
