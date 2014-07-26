@@ -221,13 +221,14 @@ def userPredictions(request,userID):
          userPredicts = PurchasedPrediction.objects.filter(userID = userID)
        except : 
          return Response(status = status.HTTP_404_NOT_FOUND)
-        
+       error = 0 
        for predict in userPredicts :
          try:
           predicts=Prediction.objects.get(id = predict.predictionID)
          except :
-          return Response(status = status.HTTP_404_NOT_FOUND)
-         predictions.append(predicts)
+          error = 1 
+         if error != 1 :  
+             predictions.append(predicts)
             
        predictSerializer = PredictionSerializer(predictions)
        return Response(predictSerializer.data , status = status.HTTP_200_OK)
