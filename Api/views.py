@@ -315,7 +315,8 @@ def filterPredictions(request):
 @permission_classes((IsAuthenticated ,))
 def creditsPurchased(request):
     if request.method == 'POST':
-       
+      
+       response_data = {} 
        purchaseCredit = int(request.DATA["credit"])
        try:
           user = User.objects.get(id = request.DATA["userID"])
@@ -333,13 +334,15 @@ def creditsPurchased(request):
           return Response(status = status.HTTP_200_OK) 
        user_credit.credit += purchaseCredit 
        user_credit.save()
+       response_data["credit"]= user_credit.credit
 
-       return Response(status = status.HTTP_200_OK)
+       return HttpResponse(json.dumps(response_data),content_type="application/json")
 
 @api_view(["POST"])
 @permission_classes((IsAuthenticated ,))
 def predictionPurchased(request):
     if request.method == 'POST' : 
+       response_data = {}
        try : 
          usercredit = UserCredit.objects.get(user_id = request.DATA["userID"])      
        except:
@@ -349,6 +352,7 @@ def predictionPurchased(request):
           purchasedPrediction.save()       
           usercredit.credit = usercredit.credit - 1
           usercredit.save()
-          return Response(status = status.HTTP_200_OK)
+          response_data["credit"]=usercredit.credit
+          return HttpResponse(json.dumps(response_data),content_type="application/json")
        else :
           return Response(status = status.HTTP_401_UNAUTHORIZED)
